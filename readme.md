@@ -28,7 +28,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
   files-backup:
-    image: s3-backup-restore
+    image: jaaaco/s3-backup-restore
     depends_on:
       - app
     volumes:
