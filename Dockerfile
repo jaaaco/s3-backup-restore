@@ -3,6 +3,6 @@ FROM debian:jessie-slim
 RUN apt-get update && apt-get install -y cron python-pip
 RUN pip install awscli
 
-ADD backup.sh /
-RUN chmod +x backup.sh
-CMD ["./backup.sh"]
+ADD entrypoint.sh /
+RUN chmod +x entrypoint.sh
+ENTRYPOINT /entrypoint.sh

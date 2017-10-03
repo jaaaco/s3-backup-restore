@@ -39,15 +39,18 @@ if [ "$1" == "backup" ] ; then
   exit 0
 fi
 
-echo "Restoring latest /data after initial delay: $DELAY (sec)"
-sleep $DELAY
-aws s3api get-object --bucket $S3BUCKET --key $FILENAME /data.tar.gz
-if [ -e /data.tar.gz ] ; then
-    tar zxf data.tar.gz
-    echo "Cleaning up..."
-    rm /data.tar.gz
-else
-    echo "No file backup to restore"
+if [ "$1" == "restore" ] ; then
+    echo "Restoring latest /data after initial delay: $DELAY (sec)"
+    sleep $DELAY
+    aws s3api get-object --bucket $S3BUCKET --key $FILENAME /data.tar.gz
+    if [ -e /data.tar.gz ] ; then
+        tar zxf data.tar.gz
+        echo "Cleaning up..."
+        rm /data.tar.gz
+    else
+        echo "No file backup to restore"
+    fi
+    exit 0
 fi
 
 CRON_SCHEDULE=${CRON_SCHEDULE:-4 4 * * *}

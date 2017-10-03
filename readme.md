@@ -1,10 +1,8 @@
 [![Docker Build Status](https://img.shields.io/docker/build/jaaaco/s3-backup-restore.svg)](https://hub.docker.com/r/jaaaco/s3-backup-restore/)
 
-# S3 Backup / Restore-on-startup container
+# S3 Backup / Restore container
 
-When started container checks if there is archive present on S3 and restores it to mounted /data volume.
-
-Then it goes to cron-mode, making archive **in the same S3 file** according to specified CRON_SCHEDULE.
+When started it goes to cron-mode, making archive **in the same S3 file** according to specified CRON_SCHEDULE.
 
 If you want backup file retention enable Versioning on S3 bucket and create S3 Life Cycle Rules to permanently 
 delete older version after certain number of days.
@@ -45,7 +43,13 @@ volumes:
 ## Creating initial backup manually
 
 ```
-docker exec running-container-id /backup.sh backup
+docker exec running-container-id /entrypoint.sh backup
+```
+
+## Restoring files from latest archive
+
+```
+docker exec running-container-id /entrypoint.sh restore
 ```
 
 ## Required ENV variables
