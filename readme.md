@@ -2,10 +2,12 @@
 
 # S3 Backup / Restore container
 
-When started it goes to cron-mode, making archive **in the same S3 file** according to specified CRON_SCHEDULE.
+When started it goes to wait mode (by default) waiting for docker exec commands 
+to make backup or restore. 
 
-If you want backup file retention enable Versioning on S3 bucket and create S3 Life Cycle Rules to permanently 
-delete older version after certain number of days.
+# Cron mode
+
+To enable cron mode to make backups according to CRON_SCHEDULE add **command: /command cron* to your composition.
 
 ## Usage
 
@@ -23,6 +25,8 @@ services:
       - data-volume:/var/www/html
   mysql:
     image: mysql:5.7
+    volumes:
+      - "${pwd}/my.cnf:/etc/mysql/my.cnf"
     environment:
       MYSQL_ROOT_PASSWORD: password
   files-backup:
@@ -32,24 +36,30 @@ services:
     volumes:
       - data-volume:/data
     environment:
-      S3BUCKET: your-aws-s3-bucket-name
-      AWS_ACCESS_KEY_ID: your-aws-access-key
-      AWS_SECRET_ACCESS_KEY: your-aws-secret-access-key
+      S3BUCKET: <your-bucket-name>
+      AWS_ACCESS_KEY_ID: <your-aws-key-id-here>
+      AWS_SECRET_ACCESS_KEY: <your-aws-secret-key-here>
       FILEPREFIX: my-app-files
 volumes:
   data-volume:
 ```
 
-## Creating initial backup manually
+## Creating backups
 
 ```
-docker exec running-container-id /entrypoint.sh backup
+docker exec <running-container-id> /command backup
 ```
+
+
+It creates an archive **in the same S3 file**.
+
+If you want backup file retention enable Versioning on S3 bucket and create S3 Life Cycle Rules to permanently 
+delete older version after certain number of days.
 
 ## Restoring files from latest archive
 
 ```
-docker exec running-container-id /entrypoint.sh restore
+docker exec <running-container-id> /command restore
 ```
 
 ## Required ENV variables
@@ -59,4 +69,3 @@ docker exec running-container-id /entrypoint.sh restore
 * S3BUCKET - S3 bucket name
 * FILEPREFIX - (optional) file prefix, defaults to "backup"
 * CRON_SCHEDULE - (optional) cron schedule, defaults to 4 4 * * * (at 4:04 am, every day)
-* DELAY - (optional) restore delay in seconds, defaults to 15 sec.

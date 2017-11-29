@@ -1,0 +1,28 @@
+version: '3.3'
+services:
+  app:
+    image: wordpress
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_PASSWORD: password
+    volumes:
+      - data-volume:/var/www/html
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - "${pwd}/my.cnf:/etc/mysql/my.cnf"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+  files-backup:
+    image: jaaaco/s3-backup-restore
+    depends_on:
+      - app
+    volumes:
+      - data-volume:/data
+    environment:
+      S3BUCKET: <your-bucket-name>
+      AWS_ACCESS_KEY_ID: <your-aws-key-id-here>
+      AWS_SECRET_ACCESS_KEY: <your-aws-secret-key-here>
+      FILEPREFIX: my-app-files
+volumes:
+  data-volume:
