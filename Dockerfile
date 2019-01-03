@@ -5,4 +5,5 @@ RUN pip install awscli
 
 ADD command /
 RUN chmod +x command
+VOLUME /var/log/
 CMD /command cron
