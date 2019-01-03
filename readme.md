@@ -40,6 +40,7 @@ services:
       AWS_ACCESS_KEY_ID: <your-aws-key-id-here>
       AWS_SECRET_ACCESS_KEY: <your-aws-secret-key-here>
       FILEPREFIX: my-app-files
+      CRON_SCHEDULE: 4 4 * * *
 volumes:
   data-volume:
 ```

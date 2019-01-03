@@ -5,5 +5,4 @@ RUN pip install awscli
 
 ADD command /
 RUN chmod +x command
-ENTRYPOINT /command
-CMD cron
+CMD /command cron
