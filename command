@@ -29,7 +29,7 @@ FILENAME=$FILEPREFIX.latest.tar.gz
 if [ "$1" == "backup" ] ; then
   echo "Starting /data backup ... $(date)"
   tar zcf /data.tar.gz /data/
-  aws s3api put-object --bucket $S3BUCKET --key $FILENAME --body /data.tar.gz
+  aws s3 cp /data.tar.gz s3://$S3BUCKET/$FILENAME
   echo "Cleaning up..."
   rm /data.tar.gz
   exit 0
